@@ -1,5 +1,7 @@
+// app/page.tsx
 import { redirect } from "next/navigation";
 
 export default function Page() {
-  redirect("/home"); // ou "/gerar-times" se quiser ir direto para a geração de times
+  // Redireciona automaticamente para a Home
+  redirect("/home"); // se quiser, pode trocar para "/gerar-times"
 }

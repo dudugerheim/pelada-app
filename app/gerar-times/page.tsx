@@ -2,30 +2,10 @@
 
 import { useEffect, useState } from "react";
 
-type Jogador = {
-  id: string;
-  nome: string;
-  ataque: number;
-  defesa: number;
-  passe: number;
-  velocidade: number;
-  folego: number;
-  habilidade: number;
-  overall: number;
-};
-
-type Time = {
-  jogadores: Jogador[];
-  forca: number;
-  cor: string;
-};
-
 export default function GerarTimesPage() {
-  const [jogadores, setJogadores] = useState<Jogador[]>([]);
-  const [times, setTimes] = useState<Time[]>([]);
+  const [jogadores, setJogadores] = useState<any[]>([]);
+  const [times, setTimes] = useState<any[]>([]);
   const [numeroTimes, setNumeroTimes] = useState(3);
-
-  const cores = ["#f87171", "#60a5fa", "#34d399", "#fbbf24"]; // cores para até 4 times
 
   useEffect(() => {
     fetch(
@@ -35,16 +15,15 @@ export default function GerarTimesPage() {
       .then((data) => setJogadores(data));
   }, []);
 
-  function embaralhar(array: Jogador[]) {
+  function embaralhar(array: any[]) {
     return [...array].sort(() => Math.random() - 0.5);
   }
 
   function gerarTimes() {
-    const listaTimes: Time[] = Array.from({ length: numeroTimes }, (_, i) => ({
-      jogadores: [],
-      forca: 0,
-      cor: cores[i],
-    }));
+    const listaTimes: { jogadores: any[]; forca: number }[] = Array.from(
+      { length: numeroTimes },
+      () => ({ jogadores: [], forca: 0 })
+    );
 
     const embaralhados = embaralhar(jogadores);
 
@@ -59,41 +38,37 @@ export default function GerarTimesPage() {
   }
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-4">Gerar Times</h1>
+    <div style={{ padding: "40px" }}>
+      <h1>Gerar Times</h1>
 
-      <div className="mb-4">
-        <label className="mr-2 font-semibold">Número de times:</label>
+      <div style={{ marginBottom: "20px" }}>
+        <label>Número de times:</label>
         <select
           value={numeroTimes}
           onChange={(e) => setNumeroTimes(Number(e.target.value))}
-          className="border px-2 py-1 rounded"
         >
           <option value={3}>3 times</option>
           <option value={4}>4 times</option>
         </select>
       </div>
 
-      <button
-        onClick={gerarTimes}
-        className="bg-blue-600 text-white px-4 py-2 rounded mb-6 hover:bg-blue-700 transition"
-      >
-        Gerar Times
-      </button>
+      <button onClick={gerarTimes}>Gerar Times</button>
 
-      {times.map((time, index) => (
-        <div key={index} className="mb-6 p-4 rounded" style={{ backgroundColor: time.cor }}>
-          <h2 className="text-xl font-bold mb-2">Time {index + 1}</h2>
-          <div className="mb-2">Força total: {time.forca}</div>
-          <ul>
-            {time.jogadores.map((jogador) => (
-              <li key={jogador.id}>
-                {jogador.nome} ({jogador.overall})
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      <div style={{ marginTop: "40px" }}>
+        {times.map((time, index) => (
+          <div key={index} style={{ marginBottom: "30px" }}>
+            <h2>Time {index + 1}</h2>
+            <div>Força total: {time.forca}</div>
+            <ul>
+              {time.jogadores.map((jogador: any, idx: number) => (
+                <li key={idx}>
+                  {jogador.nome} ({jogador.overall})
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
